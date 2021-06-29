@@ -16,6 +16,7 @@ module Data.Polytime.Span
 import           Control.Applicative (liftA2)
 import           Foreign.Storable (Storable)
 import           GHC.Generics (Generic)
+import           Linear.Vector (Additive, zero, (^+^), (^-^))
 
 -- | Time Spans, or differences between two times in seconds.
 newtype Span n = Span n
@@ -34,6 +35,14 @@ newtype Span n = Span n
      , Storable
      , Traversable
      )
+
+instance Additive Span where
+  zero = Span 0
+  (^+^) = (+)
+  (^-^) = (-)
+
+instance Show n => Show (Span n) where
+  showsPrec prec (Span n) = showsPrec prec n
 
 instance Applicative Span where
   pure = Span

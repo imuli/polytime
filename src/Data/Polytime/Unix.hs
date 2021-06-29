@@ -2,6 +2,7 @@
 {-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies #-}
 
 {-|
 Copyright   : Unlicense (Public Domain)
@@ -14,10 +15,12 @@ module Data.Polytime.Unix
   ) where
 
 import           Data.Polytime.Class (TimeSource, now)
-import           Data.Polytime.Span
+import           Data.Polytime.Span (Span(Span))
 import           Data.Time.Clock.POSIX (getPOSIXTime)
 import           Foreign.Storable (Storable)
 import           GHC.Generics (Generic)
+import           Linear.Affine (Affine, Diff, (.+^), (.-.), (.-^))
+import           Linear.Vector ((^+^), (^-^))
 
 -- | Unix clock time.
 --
@@ -41,6 +44,12 @@ newtype Unix n = Unix (Span n)
      , Storable
      , Traversable
      )
+
+instance Affine Unix where
+  type instance Diff Unix = Span
+  Unix p .+^ x = Unix $ p ^+^ x
+  Unix p .-. Unix q = p ^-^ q
+  Unix p .-^ q = Unix $ p ^-^ q
 
 instance Fractional n => TimeSource (Unix n) IO where
   now = Unix . Span . realToFrac <$> getPOSIXTime

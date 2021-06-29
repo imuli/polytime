@@ -3,6 +3,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies #-}
 
 {-|
 Copyright   : Unlicense (Public Domain)
@@ -19,6 +20,8 @@ import           Data.Polytime.Span (Span(Span))
 import           Foreign.Storable (Storable)
 import           GHC.Clock (getMonotonicTimeNSec)
 import           GHC.Generics (Generic)
+import           Linear.Affine (Affine, Diff, (.+^), (.-.), (.-^))
+import           Linear.Vector ((^+^), (^-^))
 
 -- | Monotonic clock time.
 --
@@ -46,6 +49,15 @@ newtype Mono n = Mono (Span n)
      , Storable
      , Traversable
      )
+
+instance Affine Mono where
+  type instance Diff Mono = Span
+  Mono p .+^ x = Mono $ p ^+^ x
+  Mono p .-. Mono q = p ^-^ q
+  Mono p .-^ q = Mono $ p ^-^ q
+
+instance Show n => Show (Mono n) where
+  showsPrec prec (Mono n) = showsPrec prec n
 
 instance Fractional n => TimeSource (Mono n) IO where
   now = Mono . Span . (/ 1000000000) . fromIntegral <$> getMonotonicTimeNSec
