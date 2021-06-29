@@ -1,0 +1,34 @@
+name: polytime
+version: 0.1.0
+synopsis: Polymorphic time representations.
+maintainer: Imuli <i@imu.li>
+github: imuli/polytime
+license-file: UNLICENSE
+license: PublicDomain
+category: Time
+extra-source-files:
+  - CHANGELOG.md
+description: |
+  polytime provides two things -
+
+  - newtype wrappers for various types of time, one for durations several types of instants.
+  - type classes for acquiring different types of time (Cf. monad-time)
+
+ghc-options: -Wall
+
+dependencies:
+  - base >= 4.11 && < 5
+  - time >= 1.9 && < 2
+  - transformers >= 0.4 && < 0.6
+
+library:
+  source-dirs: src
+
+tests:
+  spec:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+      - hspec ^>=  2.7
+      - QuickCheck ^>= 2.14
+      - polytime
