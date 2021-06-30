@@ -39,6 +39,7 @@ newtype Unix n = Unix (Span n)
      , Generic
      , Num
      , Ord
+     , Read
      , Real
      , RealFrac
      , Storable

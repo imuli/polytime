@@ -17,6 +17,7 @@ import           Control.Applicative (liftA2)
 import           Foreign.Storable (Storable)
 import           GHC.Generics (Generic)
 import           Linear.Vector (Additive, zero, (^+^), (^-^))
+import           Text.Read (readPrec)
 
 -- | Time Spans, or differences between two times in seconds.
 newtype Span n = Span n
@@ -43,6 +44,9 @@ instance Additive Span where
 
 instance Show n => Show (Span n) where
   showsPrec prec (Span n) = showsPrec prec n
+
+instance Read n => Read (Span n) where
+  readPrec = Span <$> readPrec
 
 instance Applicative Span where
   pure = Span

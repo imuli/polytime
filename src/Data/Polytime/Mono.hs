@@ -44,6 +44,7 @@ newtype Mono n = Mono (Span n)
      , Monad
      , Num
      , Ord
+     , Read
      , Real
      , RealFrac
      , Storable
